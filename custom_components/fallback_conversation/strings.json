@@ -1,0 +1,30 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "data": {
+            "name": "Name",
+            "debug_level": "Debug Level"
+          }
+        }
+      }
+    },
+    "options": {
+      "error": {
+      },
+      "step": {
+        "init": {
+          "title": "Fallback Options",
+          "data": {
+            "debug_level": "Debug Level",
+            "primary_agent": "Primary Conversation Agent",
+            "fallback_agent": "Fallback Conversation Agent"
+          },
+          "data_description": {
+            "primary_agent": "The first conversation agent that all requests will go to. \nRecommended to be the fastest agent you have that is also local-only, even if it isn't very good at responding.",
+            "fallback_agent": "The backup conversation agent incase the primary agent is unable to handle the request. \nThis is where you may use an cloud service or a very slow conversation agent."
+          }
+        }
+      }
+    }
+  }

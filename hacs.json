@@ -1,0 +1,5 @@
+{
+    "name": "fallback_conversation",
+    "render_readme": true,
+    "homeassistant": "2024.2.0"
+}

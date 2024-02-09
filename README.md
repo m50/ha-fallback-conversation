@@ -1,2 +1,4 @@
-# ha-fallback-conversation
-HomeAssistant Assist Fallback Conversation Agent
+# Fallback Conversation Agent
+
+This is a custom component of Home Assistant.
+

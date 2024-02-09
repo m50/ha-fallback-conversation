@@ -1,0 +1,17 @@
+{
+    "domain": "fallback_conversation",
+    "name": "Fallback Conversation Agent",
+    "codeowners": [
+      "@m50"
+    ],
+    "config_flow": true,
+    "dependencies": [
+      "conversation"
+    ],
+    "documentation": "https://github.com/m50/ha-fallback-conversation",
+    "integration_type": "service",
+    "iot_class": "local_polling",
+    "issue_tracker": "https://github.com/m50/ha-fallback-conversation/issues",
+    "requirements": [],
+    "version": "1.0.0"
+  }
