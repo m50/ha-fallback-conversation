@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import logging
-import types
-import yaml
 # from types import MappingProxyType
 from typing import Any
 
@@ -15,10 +13,6 @@ from homeassistant.core import HomeAssistant, async_get_hass, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.components.conversation import _get_agent_manager
 from homeassistant.helpers.selector import (
-    BooleanSelector,
-    NumberSelector,
-    NumberSelectorConfig,
-    TemplateSelector,
     SelectSelector,
     SelectSelectorConfig,
     SelectOptionDict,
@@ -137,7 +131,7 @@ class OptionsFlow(config_entries.OptionsFlow):
                 SelectSelectorConfig(
                     options = [
                         SelectOptionDict(value=agent.id, label=agent.name)
-                        for agent in agents
+                        for agent in agents if agent.name != self._options[CONF_NAME]
                     ],
                     mode=SelectSelectorMode.DROPDOWN,
                 )
@@ -149,7 +143,7 @@ class OptionsFlow(config_entries.OptionsFlow):
                 SelectSelectorConfig(
                     options = [
                         SelectOptionDict(value=agent.id, label=agent.name)
-                        for agent in agents
+                        for agent in agents if agent.name != self._options[CONF_NAME]
                     ],
                     mode=SelectSelectorMode.DROPDOWN,
                 )
