@@ -13,6 +13,8 @@ from homeassistant.core import HomeAssistant, async_get_hass, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.components.conversation import _get_agent_manager
 from homeassistant.helpers.selector import (
+    ConversationAgentSelector, 
+    ConversationAgentSelectorConfig,
     SelectSelector,
     SelectSelectorConfig,
     SelectOptionDict,
@@ -103,11 +105,6 @@ class OptionsFlow(config_entries.OptionsFlow):
 
     async def fallback_config_option_schema(self, options: dict) -> dict:
         """Return a schema for Fallback options."""
-
-        agent_manager = _get_agent_manager(async_get_hass())
-        agents = agent_manager.async_get_agent_info()
-
-
         return {
             vol.Required(
                 CONF_DEBUG_LEVEL, 
@@ -127,25 +124,9 @@ class OptionsFlow(config_entries.OptionsFlow):
                 CONF_PRIMARY_AGENT,
                 description={"suggested_value": options.get(CONF_PRIMARY_AGENT, "homeassistant")},
                 default="homeassistant",
-            ): SelectSelector(
-                SelectSelectorConfig(
-                    options = [
-                        SelectOptionDict(value=agent.id, label=agent.name)
-                        for agent in agents if agent.name != self._options[CONF_NAME]
-                    ],
-                    mode=SelectSelectorMode.DROPDOWN,
-                )
-            ),
+            ): ConversationAgentSelector(ConversationAgentSelectorConfig()),
             vol.Required(
                 CONF_FALLBACK_AGENT,
                 description={"suggested_value": options.get(CONF_FALLBACK_AGENT, "")},
-            ): SelectSelector(
-                SelectSelectorConfig(
-                    options = [
-                        SelectOptionDict(value=agent.id, label=agent.name)
-                        for agent in agents if agent.name != self._options[CONF_NAME]
-                    ],
-                    mode=SelectSelectorMode.DROPDOWN,
-                )
-            ),
+            ): ConversationAgentSelector(ConversationAgentSelectorConfig()),
         };
