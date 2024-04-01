@@ -23,6 +23,7 @@ from .const import (
     DEBUG_LEVEL_LOW_DEBUG,
     DEBUG_LEVEL_VERBOSE_DEBUG,
     DOMAIN,
+    EVENT_CONVERSATION_FINISHED,
 )
 
 
@@ -138,7 +139,15 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
                 result.response.speech['plain']['speech'] = f"{previous_result.response.speech['plain'].get('agent_name', 'UNKNOWN')} failed with response: {pr} Then {agent_name} responded with {r}"
             else:
                 result.response.speech['plain']['speech'] = f"{agent_name} responded with: {r}"
-
+        
+        self.hass.bus.async_fire(
+            EVENT_CONVERSATION_FINISHED,
+            {
+                "result": result,
+                "user_input": user_input,
+            },
+        )
+        
         return result
 
     def _convert_agent_info_to_dict(self, agents: list[conversation.AgentInfo]) -> dict[str, str]:
