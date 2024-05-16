@@ -27,3 +27,10 @@ The options provide 3 debug levels:
 8. Go to Settings > Voice Assistants.
 9. Click to edit Assistant (named "Home Assistant" by default).
 10. Select the name of your Fallback Conversation Agent from the "Conversation agent" tab
+
+## Contributors
+
+Contributions are open. I would like to thank the following contributors:
+
+- @t0bst4r
+- @ov1d1u
