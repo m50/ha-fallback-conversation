@@ -64,11 +64,16 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
         self, user_input: conversation.ConversationInput
     ) -> conversation.ConversationResult:
         """Process a sentence."""
-        agent_manager = conversation._get_agent_manager(self.hass)
-        agent_names = self._convert_agent_info_to_dict(agent_manager.async_get_agent_info())
+        agent_manager = conversation.get_agent_manager(self.hass)
+        default_agent = conversation.default_agent.async_get_default_agent(self.hass)
+        agent_names = self._convert_agent_info_to_dict(
+            agent_manager.async_get_agent_info()
+        )
+        agent_names[conversation.const.HOME_ASSISTANT_AGENT] = default_agent.name
+        agent_names[conversation.const.OLD_HOME_ASSISTANT_AGENT] = default_agent.name
         agents = [
-            self.entry.options.get(CONF_PRIMARY_AGENT, agent_manager.default_agent), 
-            self.entry.options.get(CONF_FALLBACK_AGENT, agent_manager.default_agent),
+            self.entry.options.get(CONF_PRIMARY_AGENT, default_agent),
+            self.entry.options.get(CONF_FALLBACK_AGENT, default_agent),
         ]
 
         debug_level = self.entry.options.get(CONF_DEBUG_LEVEL, DEBUG_LEVEL_NO_DEBUG)
@@ -121,7 +126,7 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
         previous_result,
     ) -> conversation.ConversationResult:
         """Process a specified agent."""
-        agent = await agent_manager.async_get_agent(agent_id)
+        agent = conversation.agent_manager.async_get_agent(self.hass, agent_id)
 
         _LOGGER.debug("Processing in %s using %s with debug level %s: %s", user_input.language, agent_id, debug_level, user_input.text)
 

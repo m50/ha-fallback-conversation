@@ -11,7 +11,6 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant, async_get_hass, callback
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.components.conversation import _get_agent_manager
 from homeassistant.helpers.selector import (
     ConversationAgentSelector, 
     ConversationAgentSelectorConfig,
