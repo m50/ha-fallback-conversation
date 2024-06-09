@@ -146,12 +146,16 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
 
         return result
 
-    def _convert_agent_info_to_dict(self, agents: list[conversation.AgentInfo]) -> dict[str, str]:
+    def _convert_agent_info_to_dict(self, agents_info: list[conversation.AgentInfo]) -> dict[str, str]:
         """Takes a list of AgentInfo and makes it a dict of ID -> Name."""
+
+        agent_manager = conversation.get_agent_manager(self.hass)
+
         r = {}
-        for agent in agents:
-            r[agent.id] = agent.name
-
+        for agent_info in agents_info:
+            agent = agent_manager.async_get_agent(agent_info.id)
+            agent_id = None
+            if hasattr(agent, "registry_entry"):
+                agent_id = agent.entity_id
+            r[agent_id] = agent_info.name
         return r
-
-
