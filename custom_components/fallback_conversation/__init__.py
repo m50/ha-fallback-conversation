@@ -156,6 +156,6 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
             agent = agent_manager.async_get_agent(agent_info.id)
             agent_id = None
             if hasattr(agent, "registry_entry"):
-                agent_id = agent.entity_id
+                agent_id = agent.registry_entry.entity_id
             r[agent_id] = agent_info.name
         return r
