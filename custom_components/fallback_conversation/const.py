@@ -12,3 +12,8 @@ DEBUG_LEVEL_VERBOSE_DEBUG = "verbose"
 
 DEFAULT_NAME = "Fallback Conversation Agent"
 DEFAULT_DEBUG_LEVEL = DEBUG_LEVEL_NO_DEBUG
+
+STRANGE_ERROR_RESPONSES = [
+    "not any",
+    "geen",
+]
