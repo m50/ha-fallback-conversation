@@ -88,12 +88,12 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
             result = await self._async_process_agent(
                 agent_manager,
                 agent_id,
-                agent_names[agent_id],
+                agent_names[agent_id] or "[unknown]",
                 user_input,
                 debug_level,
                 result,
             )
-            if result.response.response_type != intent.IntentResponseType.ERROR and result.response.speech['plain']['speech'] not in STRANGE_ERROR_RESPONSES:
+            if result.response.response_type != intent.IntentResponseType.ERROR and result.response.speech['plain']['original_speech'].lower() not in STRANGE_ERROR_RESPONSES:
                 return result
             all_results.append(result)
 
