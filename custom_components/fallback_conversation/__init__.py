@@ -23,6 +23,7 @@ from .const import (
     DEBUG_LEVEL_LOW_DEBUG,
     DEBUG_LEVEL_VERBOSE_DEBUG,
     DOMAIN,
+    STRANGE_ERROR_RESPONSES,
 )
 
 
@@ -85,14 +86,14 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
         result = None
         for agent_id in agents:
             result = await self._async_process_agent(
-                agent_manager, 
-                agent_id, 
-                agent_names[agent_id], 
-                user_input, 
+                agent_manager,
+                agent_id,
+                agent_names[agent_id] or "[unknown]",
+                user_input,
                 debug_level,
                 result,
             )
-            if result.response.response_type != intent.IntentResponseType.ERROR:
+            if result.response.response_type != intent.IntentResponseType.ERROR and result.response.speech['plain']['original_speech'].lower() not in STRANGE_ERROR_RESPONSES:
                 return result
             all_results.append(result)
 
@@ -113,15 +114,15 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
             conversation_id=result.conversation_id,
             response=intent_response
         )
-    
+
         return result
 
     async def _async_process_agent(
-        self, 
-        agent_manager: conversation.AgentManager, 
+        self,
+        agent_manager: conversation.AgentManager,
         agent_id: str,
         agent_name: str,
-        user_input: conversation.ConversationInput, 
+        user_input: conversation.ConversationInput,
         debug_level: int,
         previous_result,
     ) -> conversation.ConversationResult:
