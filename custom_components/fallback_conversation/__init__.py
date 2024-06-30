@@ -93,7 +93,7 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
                 debug_level,
                 result,
             )
-            if result.response.response_type != intent.IntentResponseType.ERROR && result.response.speech['plain']['speech'] not in STRANGE_ERROR_RESPONSES::
+            if result.response.response_type != intent.IntentResponseType.ERROR and result.response.speech['plain']['speech'] not in STRANGE_ERROR_RESPONSES:
                 return result
             all_results.append(result)
 
