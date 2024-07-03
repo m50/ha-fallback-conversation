@@ -85,10 +85,16 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
         all_results = []
         result = None
         for agent_id in agents:
+            agent_name = "[unknown]"
+            if agent_id in agent_names:
+                agent_name = agent_names[agent_id]
+            else:
+                _LOGGER.warning("agent_name not found for agent_id %s", agent_id)
+
             result = await self._async_process_agent(
                 agent_manager,
                 agent_id,
-                agent_names[agent_id] or "[unknown]",
+                agent_name,
                 user_input,
                 debug_level,
                 result,
@@ -155,8 +161,9 @@ class FallbackConversationAgent(conversation.AbstractConversationAgent):
         r = {}
         for agent_info in agents_info:
             agent = agent_manager.async_get_agent(agent_info.id)
-            agent_id = None
+            agent_id = agent_info.id
             if hasattr(agent, "registry_entry"):
                 agent_id = agent.registry_entry.entity_id
             r[agent_id] = agent_info.name
+            _LOGGER.debug("agent_id %s has name %s", agent_id, agent_info.name)
         return r
