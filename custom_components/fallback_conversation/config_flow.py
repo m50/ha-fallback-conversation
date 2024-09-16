@@ -9,10 +9,10 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
-from homeassistant.core import HomeAssistant, async_get_hass, callback
+from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.selector import (
-    ConversationAgentSelector, 
+    ConversationAgentSelector,
     ConversationAgentSelectorConfig,
     SelectSelector,
     SelectSelectorConfig,
@@ -53,19 +53,19 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Fallback Agent config flow."""
 
-    VERSION = 1
+    VERSION = 2
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the initial step."""
         _LOGGER.debug("ConfigFlow::user_input %s", user_input)
         if user_input is None:
             return self.async_show_form(
-                step_id="user", 
-                data_schema=STEP_USER_DATA_SCHEMA, 
+                step_id="user",
+                data_schema=STEP_USER_DATA_SCHEMA,
             )
 
         return self.async_create_entry(
-            title=user_input.get(CONF_NAME, DEFAULT_NAME), 
+            title=user_input.get(CONF_NAME, DEFAULT_NAME),
             data=user_input,
         )
 
@@ -91,7 +91,7 @@ class OptionsFlow(config_entries.OptionsFlow):
         if user_input is not None:
             self._options.update(user_input)
             return self.async_create_entry(
-                title=user_input.get(CONF_NAME, DEFAULT_NAME), 
+                title=user_input.get(CONF_NAME, DEFAULT_NAME),
                 data=self._options,
             )
 
@@ -106,7 +106,7 @@ class OptionsFlow(config_entries.OptionsFlow):
         """Return a schema for Fallback options."""
         return {
             vol.Required(
-                CONF_DEBUG_LEVEL, 
+                CONF_DEBUG_LEVEL,
                 description={"suggested_value": options.get(CONF_DEBUG_LEVEL, DEFAULT_DEBUG_LEVEL)},
                 default=DEFAULT_DEBUG_LEVEL,
             ): SelectSelector(
