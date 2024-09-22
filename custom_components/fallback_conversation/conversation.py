@@ -8,7 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.util import ulid
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.const import MATCH_ALL
+from home_assistant_intents import get_languages
 
 from homeassistant.helpers import (
     config_validation as cv,
@@ -62,7 +62,7 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
     @property
     def supported_languages(self) -> list[str]:
         """Return a list of supported languages."""
-        return MATCH_ALL
+        return get_languages()
 
     async def async_added_to_hass(self) -> None:
         """When entity is added to Home Assistant."""
