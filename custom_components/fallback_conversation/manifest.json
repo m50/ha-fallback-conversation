@@ -14,5 +14,5 @@
     "iot_class": "local_polling",
     "issue_tracker": "https://github.com/m50/ha-fallback-conversation/issues",
     "requirements": [],
-    "version": "1.1.0"
+    "version": "2.0.2"
   }

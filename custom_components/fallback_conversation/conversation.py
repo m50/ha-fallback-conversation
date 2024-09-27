@@ -93,12 +93,11 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
     ) -> conversation.ConversationResult:
         """Process a sentence."""
         agent_manager = conversation.get_agent_manager(self.hass)
-        default_agent = conversation.default_agent.async_get_default_agent(self.hass)
+        default_agent = agent_manager.async_get_agent(conversation.const.HOME_ASSISTANT_AGENT)
         agent_names = self._convert_agent_info_to_dict(
             agent_manager.async_get_agent_info()
         )
         agent_names[conversation.const.HOME_ASSISTANT_AGENT] = default_agent.name
-        agent_names[conversation.const.OLD_HOME_ASSISTANT_AGENT] = default_agent.name
         agents = [
             self.entry.options.get(CONF_PRIMARY_AGENT, default_agent),
             self.entry.options.get(CONF_FALLBACK_AGENT, default_agent),
