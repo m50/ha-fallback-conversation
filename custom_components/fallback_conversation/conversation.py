@@ -5,7 +5,7 @@ import logging
 
 from homeassistant.components import assist_pipeline, conversation
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.util import ulid
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from home_assistant_intents import get_languages
@@ -30,6 +30,12 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
+DATA_DEFAULT_ENTITY = "conversation_default_entity"
+
+@callback
+def get_default_agent(hass: HomeAssistant) -> conversation.default_agent.DefaultAgent:
+    """Get the default agent."""
+    return hass.data[DATA_DEFAULT_ENTITY]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> bool:
     """Set up Fallback Conversation from a config entry."""
@@ -93,7 +99,7 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
     ) -> conversation.ConversationResult:
         """Process a sentence."""
         agent_manager = conversation.get_agent_manager(self.hass)
-        default_agent = agent_manager.async_get_agent(conversation.const.HOME_ASSISTANT_AGENT)
+        default_agent = get_default_agent(self.hass)
         agent_names = self._convert_agent_info_to_dict(
             agent_manager.async_get_agent_info()
         )
