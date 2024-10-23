@@ -26,6 +26,8 @@ from .const import (
     STRANGE_ERROR_RESPONSES,
 )
 
+from .entity import FallbackResultEntity
+
 _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
@@ -64,6 +66,7 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
             conversation.ConversationEntityFeature.CONTROL
         )
         self.in_context_examples = None
+        self.result_entity = FallbackResultEntity(hass, f"{self._attr_unique_id}_result")
 
     @property
     def supported_languages(self) -> list[str]:
@@ -80,6 +83,7 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
         self.entry.async_on_unload(
             self.entry.add_update_listener(self._async_entry_update_listener)
         )
+        await self.hass.async_add_entity(self.result_entity)
 
     async def async_will_remove_from_hass(self) -> None:
         """When entity will be removed from Home Assistant."""
@@ -179,9 +183,10 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
         elif debug_level == DEBUG_LEVEL_VERBOSE_DEBUG:
             if previous_result is not None:
                 pr = previous_result.response.speech['plain'].get('original_speech', previous_result.response.speech['plain']['speech'])
-                result.response.speech['plain']['speech'] = f"{previous_result.response.speech['plain'].get('agent_name', 'UNKNOWN')} failed with response: {pr} Then {agent_name} responded with {r}"
-            else:
                 result.response.speech['plain']['speech'] = f"{agent_name} responded with: {r}"
+
+        # Save result to entity
+        self.result_entity.update_result(agent_name, r)
 
         return result
 
