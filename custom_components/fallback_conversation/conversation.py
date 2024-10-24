@@ -185,7 +185,7 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
                 result.response.speech['plain']['speech'] = f"{agent_name} responded with: {r}"
 
         # Save result to entity
-        self.result_entity.update_result(agent_name, r)
+        self.result_entity.update_result(agent_name, result)
 
         return result
 
