@@ -50,6 +50,5 @@ class FallbackResultEntity(SensorEntity):
         self._state = agent_name
         self._attributes = {
             "response": result.response,
-            #"timestamp": result.response
         }
         self.async_write_ha_state()

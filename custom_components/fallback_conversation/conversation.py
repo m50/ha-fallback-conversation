@@ -182,6 +182,8 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
         elif debug_level == DEBUG_LEVEL_VERBOSE_DEBUG:
             if previous_result is not None:
                 pr = previous_result.response.speech['plain'].get('original_speech', previous_result.response.speech['plain']['speech'])
+                result.response.speech['plain']['speech'] = f"{previous_result.response.speech['plain'].get('agent_name', 'UNKNOWN')} failed with response: {pr} Then {agent_name} responded with {r}"
+            else:
                 result.response.speech['plain']['speech'] = f"{agent_name} responded with: {r}"
 
         # Save result to entity
