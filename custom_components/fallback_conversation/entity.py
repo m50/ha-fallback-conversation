@@ -1,10 +1,11 @@
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.restore_state import RestoreEntity
 
-class FallbackResultEntity(Entity, RestoreEntity):
+class FallbackResultEntity():
     """Entity to store the latest fallback result."""
 
-    def __init__(self, hass, unique_id):
+    def __init__(self, hass: HomeAssistant, unique_id):
         """Initialize the entity."""
         self.hass = hass
         self._unique_id = unique_id
