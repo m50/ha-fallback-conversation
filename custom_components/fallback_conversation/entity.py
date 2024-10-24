@@ -1,6 +1,8 @@
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.restore_state import RestoreEntity
+import asyncio
+
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import EntityPlatform
+from homeassistant.components.sensor import ENTITY_ID_FORMAT
 
 class FallbackResultEntity():
     """Entity to store the latest fallback result."""
@@ -11,6 +13,7 @@ class FallbackResultEntity():
         self._unique_id = unique_id
         self._state = None
         self._attributes = {}
+        self.entity_id = ENTITY_ID_FORMAT.format(unique_id)
 
     @property
     def unique_id(self):
@@ -31,6 +34,16 @@ class FallbackResultEntity():
     def extra_state_attributes(self):
         """Return the state attributes."""
         return self._attributes
+    
+    @callback
+    def add_to_platform_start(
+        self,
+        hass: HomeAssistant,
+        platform: EntityPlatform,
+        parallel_updates: asyncio.Semaphore | None,
+    ) -> None:
+        """Start adding an entity to a platform."""
+        super().add_to_platform_start(hass, platform, parallel_updates)
 
     async def async_added_to_hass(self):
         """Run when entity about to be added."""

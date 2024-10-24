@@ -42,7 +42,7 @@ def get_default_agent(hass: HomeAssistant) -> conversation.default_agent.Default
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> bool:
     """Set up Fallback Conversation from a config entry."""
     agent = FallbackConversationAgent(hass, entry)
-    async_add_entities([agent])
+    async_add_entities([agent, agent.result_entity])
     return True
 
 class FallbackConversationAgent(conversation.ConversationEntity, conversation.AbstractConversationAgent):
@@ -83,7 +83,6 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
         self.entry.async_on_unload(
             self.entry.add_update_listener(self._async_entry_update_listener)
         )
-        await self.hass.async_add_entity(self.result_entity)
 
     async def async_will_remove_from_hass(self) -> None:
         """When entity will be removed from Home Assistant."""
