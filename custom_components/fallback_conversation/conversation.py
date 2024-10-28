@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components import assist_pipeline, conversation
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.util import ulid
@@ -26,7 +27,7 @@ from .const import (
     STRANGE_ERROR_RESPONSES,
 )
 
-from .entity import FallbackResultEntity
+from .sensor import FallbackResultEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ def get_default_agent(hass: HomeAssistant) -> conversation.default_agent.Default
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> bool:
     """Set up Fallback Conversation from a config entry."""
     agent = FallbackConversationAgent(hass, entry)
-    async_add_entities([agent, agent.result_entity])
+    async_add_entities([agent])
     return True
 
 class FallbackConversationAgent(conversation.ConversationEntity, conversation.AbstractConversationAgent):
@@ -66,7 +67,6 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
             conversation.ConversationEntityFeature.CONTROL
         )
         self.in_context_examples = None
-        self.result_entity = FallbackResultEntity(hass, f"{self._attr_unique_id}_result")
 
     @property
     def supported_languages(self) -> list[str]:
@@ -187,10 +187,11 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
                 result.response.speech['plain']['speech'] = f"{agent_name} responded with: {r}"
 
         # Save result to entity
-        if self.result_entity:
-            self.result_entity.update_result(agent_name, user_input.text, result)
+        result_entity = self.hass.data[DOMAIN][self.entry.entry_id].get("result_entity")
+        if result_entity:
+            result_entity.update_result(agent_name, user_input.text, result)
         else:
-            _LOGGER.warning("No result entity to update")
+            _LOGGER.warning("Result entity not found. Sensor platform may not be initialized yet.")
 
         return result
 

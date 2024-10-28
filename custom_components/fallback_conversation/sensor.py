@@ -2,30 +2,39 @@ import asyncio
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import EntityPlatform
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor import ENTITY_ID_FORMAT
+from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.components.conversation.models import ConversationResult
 
-class FallbackResultEntity(SensorEntity):
+from .const import DOMAIN
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> bool:
+    """Set up Fallback Conversation from a config entry."""
+    result_entity = FallbackResultEntity(hass, entry)
+    hass.data[DOMAIN][entry.entry_id]["result_entity"] = result_entity
+    async_add_entities([result_entity])
+    return True
+
+class FallbackResultEntity(SensorEntity, RestoreEntity):
     """Entity to store the latest fallback result."""
 
-    def __init__(self, hass: HomeAssistant, unique_id):
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry):
         """Initialize the entity."""
+        self
         self.hass = hass
-        self._unique_id = unique_id
+        self.entry = entry
+        self._attr_name = f"{entry.title} Result"
+        self._attr_unique_id = f"{entry.entry_id}_result"
         self._state = None
         self._attributes = {}
-        self.entity_id = ENTITY_ID_FORMAT.format(unique_id)
-
-    @property
-    def unique_id(self):
-        """Return the unique ID of the entity."""
-        return self._unique_id
 
     @property
     def name(self):
         """Return the name of the entity."""
-        return "Fallback Conversation Result"
+        return self._attr_name
 
     @property
     def state(self):
