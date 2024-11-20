@@ -6,7 +6,8 @@
     ],
     "config_flow": true,
     "dependencies": [
-      "conversation"
+      "conversation",
+      "sensor"
     ],
     "after_dependencies": ["assist_pipeline"],
     "documentation": "https://github.com/m50/ha-fallback-conversation",

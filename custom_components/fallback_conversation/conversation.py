@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components import assist_pipeline, conversation
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.util import ulid
@@ -25,6 +26,8 @@ from .const import (
     DOMAIN,
     STRANGE_ERROR_RESPONSES,
 )
+
+from .sensor import FallbackResultEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -182,6 +185,13 @@ class FallbackConversationAgent(conversation.ConversationEntity, conversation.Ab
                 result.response.speech['plain']['speech'] = f"{previous_result.response.speech['plain'].get('agent_name', 'UNKNOWN')} failed with response: {pr} Then {agent_name} responded with {r}"
             else:
                 result.response.speech['plain']['speech'] = f"{agent_name} responded with: {r}"
+
+        # Save result to entity
+        result_entity = self.hass.data[DOMAIN][self.entry.entry_id].get("result_entity")
+        if result_entity:
+            result_entity.update_result(agent_name, user_input.text, result)
+        else:
+            _LOGGER.warning("Result entity not found. Sensor platform may not be initialized yet.")
 
         return result
 

@@ -14,18 +14,17 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-PLATFORMS = (Platform.CONVERSATION,)
+PLATFORMS = [Platform.CONVERSATION, Platform.SENSOR]
 
 # hass.data key for agent.
 DATA_AGENT = "agent"
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Fallback Conversation Agent from a config entry."""
-
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = entry
+    """Set up Fallback Conversation from a config entry."""
+    hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][entry.entry_id] = {}
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
