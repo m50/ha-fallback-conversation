@@ -1,3 +1,7 @@
+# This will not be maintained anymore, as it is now implemented within Home Assistant, making this redundant. 
+
+Thank you for the support, and I am sorry for the slow maintenance of this over the last year due to burnout. I'm happy that I was able to provide functionality that was needed until Home Assistant implemented it themselves.
+
 # Fallback Conversation Agent
 
 This is a custom component of Home Assistant.
